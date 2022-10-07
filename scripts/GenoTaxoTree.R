@@ -102,7 +102,7 @@ GTDBTKTotal <- gtdbtkBac %>%
 
 
 
-## -----------------------------------------------------------------------
+## -----Merg checkM info + GTDBTK and sort colums to more human readeble----
 GenoTaxoInfo <- GTDBTKTotal%>%
   left_join(CheckM,by="Genome")
 
@@ -187,6 +187,8 @@ GenoTaxoInfo <- GenoTaxoInfo %>%
 
 
 ## -----------------------------------------------------------------------
+#Read RAXML tree from Phylophlan
+
 print("Reading tree...")
 
 Tree <- read.tree(TREE)
@@ -197,7 +199,7 @@ GGT <- ggtree(Tree,
 GGT
 
 
-## -----------------------------------------------------------------------
+## --------------------------Colouring domains (branches)-------------------
 Domains <- GenoTaxoInfo %>%
   group_by(Domain) %>%
   summarise(across(,list)) %>%
