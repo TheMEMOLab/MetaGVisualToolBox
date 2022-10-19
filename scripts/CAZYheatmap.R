@@ -61,11 +61,13 @@ if (!require("paletteer")){
 ## ----Reading arguments-----------------------------------------------------
 
 args = commandArgs(trailingOnly=TRUE)
-CHECK <- args[1] #CheckM results table
-BAC <- args[2]  #GTDBTk Bacterial classification
-ARCH <- args[3] #GTDBTk Archeal classification
-Dram <- args[4] #Metabolic Summary from DRAM
+
+Dram <- args[1] #Metabolic Summary from DRAM
+CHECK <- args[2] #CheckM results table
+BAC <- args[3]  #GTDBTk Bacterial classification
+ARCH <- args[4] #GTDBTk Archeal classification
 OUT <- args[5] #Output name
+
 
 ## ----Reading DRAM------------------------------------------------------------
 print("Reading DRAM....")
