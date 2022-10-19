@@ -68,6 +68,7 @@ Dram <- args[4] #Metabolic Summary from DRAM
 OUT <- args[5] #Output name
 
 ## ----Reading DRAM------------------------------------------------------------
+print("Reading DRAM....")
 
 DRAM <- read_excel(Dram,
                    sheet = "carbon utilization") %>%
