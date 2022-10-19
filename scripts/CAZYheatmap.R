@@ -212,7 +212,7 @@ subheader <- CAZYMod %>%
   select(gene_id,gene_description,subheader) %>%
   mutate_at(.vars = vars(subheader), 
             .funs = ~ gsub("\\,..*","",.)) %>%
-  mutate(Fiber=if_else(grepl("Cellulose",subheader),"Cellulose",
+  mutate(Glycan=if_else(grepl("Cellulose",subheader),"Cellulose",
                        if_else(grepl("Pectin|Rhamnose|pectic",subheader),"Pectin",
                                if_else(grepl("Chitin Backbone|Chitin Oligo",subheader),"Chitin",
                                        if_else(grepl("Starch",subheader),"Starch",
@@ -221,7 +221,7 @@ subheader <- CAZYMod %>%
                                                                if_else(grepl("Mucin|Fucose",subheader),"Mucin",
                                                                        if_else(grepl("sialidase",gene_description),"Mucin",
                                                                                "Other"))))))))) %>%
-  select(gene_id,subheader,Fiber)
+  select(gene_id,subheader,Glycan)
 
 myorder <- c("Starch",
              "Cellulose",
@@ -243,14 +243,14 @@ CAZYforM <- CAZYMod %>%
 
 CAzyForMMoudles <- CAZYforM %>%
   inner_join(subheader,by="gene_id") %>%
-  arrange(match(Fiber,myorder)) %>%
+  arrange(match(Glycan,myorder)) %>%
   mutate_if(is.numeric,~log2(.+1)) 
 
 
 
 ## ----------------------------------------------------------------------------
 CAzyMatrix <- CAzyForMMoudles %>%
-  select(-c(subheader,Fiber)) %>%
+  select(-c(subheader,Glycan)) %>%
   column_to_rownames("gene_id")
 
 
@@ -277,27 +277,27 @@ heatmap.colors <- as.character(colorheat)
 names(heatmap.colors) <- sort(unique(GenoTaxoInfo$Phylum))
 
 
-## ----fiber colors---------------
+## ----Glycan colors---------------
 phAnnot <- CAzyForMMoudles %>%
-  select(gene_id,Fiber) %>%
+  select(gene_id,Glycan) %>%
   column_to_rownames("gene_id")
 
 
-phAnnot$Fiber <- factor(phAnnot$Fiber, levels = myorder)
-myFiberColors <-  rev(RColorBrewer::brewer.pal(7,"Set3"))
+phAnnot$Glycan <- factor(phAnnot$Glycan, levels = myorder)
+myGlycanColors <-  rev(RColorBrewer::brewer.pal(7,"Set3"))
 
 
 
 
 ## ----------------------------------------------------------------
-annot_colors <- list(Fiber=c(Starch=myFiberColors[1],
-                             Cellulose=myFiberColors[2],
-                             Hemicellulose=myFiberColors[3],
-                             Pectin=myFiberColors[4],
-                             Chitin=myFiberColors[5],
-                             Mucin=myFiberColors[6],
-                             Other=myFiberColors[7]),
-                     Order=heatmap.colors)
+annot_colors <- list(Glycan=c(Starch=myGlycanColors[1],
+                             Cellulose=myGlycanColors[2],
+                             Hemicellulose=myGlycanColors[3],
+                             Pectin=myGlycanColors[4],
+                             Chitin=myGlycanColors[5],
+                             Mucin=myGlycanColors[6],
+                             Other=myGlycanColors[7]),
+                     Phylum=heatmap.colors)
 
 
 ## ----Use pheatmap to plot-----------------------------------
