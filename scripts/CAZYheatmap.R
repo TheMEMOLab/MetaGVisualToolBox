@@ -18,7 +18,7 @@
 # Author: Arturo Vera-Ponce de Leon
 # contact: arturo.vera.ponce.de.leon@nmbu.no
 # v 1.0
-#toto
+#
 ##############################################################################
 
 ## ----Libraries---------------------------------------------------------------
@@ -316,13 +316,47 @@ TotalCAZyPH <- pheatmap(CAzyMatrix,
                border_color = F,
                show_colnames = F)
 
+## ----Remove others from the plot for more asthetic------
+
+CAzyMatrixNoO <- CAzyForMMoudles %>%
+  filter(Glycan != "Other") %>%
+  select(-c(subheader,Glycan))  %>%
+    select(gene_id,matches(str_c(vctrs::vec_c(GenoTaxoInfo$Genome,
+                                      collapse = "|")))) %>%
+  column_to_rownames("gene_id")
+
+annot_colors <- list(Glycan=c(Starch=myGlycanColors[1],
+                              Cellulose=myGlycanColors[2],
+                              Hemicellulose=myGlycanColors[3],
+                              Pectin=myGlycanColors[4],
+                              Chitin=myGlycanColors[5],
+                              Mucin=myGlycanColors[6]),
+                     Phylum=heatmap.colors)
+
+TotalCAZyPHNO <- pheatmap(CAzyMatrixNoO,
+               color =Colors,
+               cluster_rows = F,
+               cluster_cols = F,
+               annotation_row =  phAnnot,
+               annotation_col =  heatTaxa,
+               annotation_colors = annot_colors,
+               cellwidth = 8,
+               border_color = F,
+               show_colnames = F)
+
+
 ## ----Save into a pdf-----------------------------------
-print(paste0("Saving figure to: ",OUT,".pdf"))
+print(paste0("Saving figures to: ",OUT,".pdf and ",OUT,"NoOthers.pdf"))
 
 ggsave(TotalCAZyPH,
        file=paste0(OUT,".pdf"),
        width = 30,
        height = 30)
+
+ggsave(TotalCAZyPHNO,
+       file=paste0(OUT,"NoOthers.pdf"),
+       width = 20,
+       height = 20)
 
 
 
