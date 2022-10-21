@@ -321,8 +321,8 @@ print(paste0("Saving figure to: ",OUT,".pdf"))
 
 ggsave(TotalCAZyPH,
        file=paste0(OUT,".pdf"),
-       width = 6,
-       height = 12)
+       width = 30,
+       height = 30)
 
 
 
