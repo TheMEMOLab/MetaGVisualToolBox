@@ -10,7 +10,7 @@
 # Dependencies:
 #           -R (tidyverse, readxl, gtools, vectrs, pheatmap, paletteer)
 # Input tables:
-#           -CheckM1 tabular
+#           -CheckM1 tabular (results.tsv)
 #           -GTDBTk tabular bacterial classification
 #           -GTDBTk tabular archeal classification
 #           -metabolism_summary.xlsx summary from DRAM

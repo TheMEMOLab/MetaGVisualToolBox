@@ -9,7 +9,7 @@
 # Dependencies:
 #           -R (tidyverse,GGtree,ape,tidytree,GGtreeExtra,paletteer)
 # Input tables:
-#           -CheckM1 tabular
+#           -CheckM1 tabular (results.tsv)
 #           -GTDBTk tabular bacterial classification
 #           -GTDBTk tabular archeal classification
 #           -RAxML tree from Phyloplhan
