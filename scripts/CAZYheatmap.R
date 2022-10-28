@@ -10,7 +10,7 @@
 # Dependencies:
 #           -R (tidyverse, readxl, gtools, vectrs, pheatmap, paletteer)
 # Input tables:
-#           -CheckM tabular 
+#           -CheckM2 tabular (quality_report.tsv)  
 #           -GTDBTk tabular bacterial classification
 #           -GTDBTk tabular archeal classification
 #           -metabolism_summary.xlsx summary from DRAM
@@ -80,7 +80,8 @@ DRAM <- read_excel(Dram,
 print("Reading checkM....")
 
 CheckM <- read_tsv(CHECK) %>%
-  dplyr::select(matches("Bin Id|Com|Con|Strain")) %>%
+  dplyr::select(matches("Name|Completeness|Contamination")) %>%
+  dplyr::rename("Bin_Id"=Name) %>%
   rename_all(.,~str_replace_all(.," ","_")) %>%
   mutate(Genome=str_remove_all(Bin_Id,".fasta$")) %>%
   select(Genome, everything())
@@ -110,10 +111,9 @@ GenoTaxoInfo <- GTDBTKTotal%>%
 
 GenoTaxoInfo <- GenoTaxoInfo %>%
   select(Bin_Id,Genome,
-         classification,
-         Completeness,
-         Contamination,
-         Strain_heterogeneity)%>%
+           classification,
+           Completeness,
+           Contamination)%>%
   separate(classification,sep=";",
            into=c("D",
                   "P",
@@ -212,7 +212,7 @@ subheader <- CAZYMod %>%
   select(gene_id,gene_description,subheader) %>%
   mutate_at(.vars = vars(subheader), 
             .funs = ~ gsub("\\,..*","",.)) %>%
-  mutate(Glycan=if_else(grepl("Cellulose",subheader),"Cellulose",
+  mutate(Glycan=if_else(grepl("Cellulose",subheader),"Cellulose_cello_oligosaccharides",
                        if_else(grepl("Pectin|Rhamnose|pectic",subheader),"Pectin",
                                if_else(grepl("Chitin Backbone|Chitin Oligo",subheader),"Chitin",
                                        if_else(grepl("Starch",subheader),"Starch",
@@ -224,7 +224,7 @@ subheader <- CAZYMod %>%
   select(gene_id,subheader,Glycan)
 
 myorder <- c("Starch",
-             "Cellulose",
+             "Cellulose_cello_oligosaccharides",
              "Hemicellulose",
              "Pectin",
              "Chitin",
@@ -291,7 +291,7 @@ myGlycanColors <-  rev(RColorBrewer::brewer.pal(7,"Set3"))
 
 ## ----------------------------------------------------------------
 annot_colors <- list(Glycan=c(Starch=myGlycanColors[1],
-                             Cellulose=myGlycanColors[2],
+                             Cellulose_cello_oligosaccharides=myGlycanColors[2],
                              Hemicellulose=myGlycanColors[3],
                              Pectin=myGlycanColors[4],
                              Chitin=myGlycanColors[5],
@@ -326,7 +326,7 @@ CAzyMatrixNoO <- CAzyForMMoudles %>%
   column_to_rownames("gene_id")
 
 annot_colors <- list(Glycan=c(Starch=myGlycanColors[1],
-                              Cellulose=myGlycanColors[2],
+                              Cellulose_cello_oligosaccharides=myGlycanColors[2],
                               Hemicellulose=myGlycanColors[3],
                               Pectin=myGlycanColors[4],
                               Chitin=myGlycanColors[5],
@@ -355,7 +355,7 @@ ggsave(TotalCAZyPH,
 
 ggsave(TotalCAZyPHNO,
        file=paste0(OUT,"NoOthers.pdf"),
-       width = 20,
+       width = 30,
        height = 20)
 
 

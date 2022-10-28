@@ -9,13 +9,13 @@
 # Dependencies:
 #           -R (tidyverse,GGtree,ape,tidytree,GGtreeExtra,paletteer)
 # Input tables:
-#           -CheckM tabular 
+#           -CheckM2 tabular (quality_report.tsv) 
 #           -GTDBTk tabular bacterial classification
 #           -GTDBTk tabular archeal classification
 #           -RAxML tree from Phyloplhan
 #
 # Author: Arturo Vera-Ponce de Leon
-# contac: arturo.vera.ponce.de.leon@nmbu.no
+# contact: arturo.vera.ponce.de.leon@nmbu.no
 # v 1.0
 # October 2022
 ##############################################################################
@@ -67,7 +67,7 @@ if (!require("paletteer")){
 ## ----Reading arguments-----------------------------------------------------
 
 args = commandArgs(trailingOnly=TRUE)
-CHECK <- args[1] #CheckM results table
+CHECK <- args[1] #CheckM2 results table
 BAC <- args[2]  #GTDBTk Bacterial classification
 ARCH <- args[3] #GTDBTk Archeal classification
 TREE <- args[4] #Phyloplhlan RAXMl tree
@@ -77,7 +77,8 @@ OUT <- args[5] #Output name
 print("Reading checkM....")
 
 CheckM <- read_tsv(CHECK) %>%
-  dplyr::select(matches("Bin Id|Com|Con|Strain")) %>%
+  dplyr::select(matches("Name|Completeness|Contamination")) %>%
+  dplyr::rename("Bin_Id"=Name) %>%
   rename_all(.,~str_replace_all(.," ","_")) %>%
   mutate(Genome=str_remove_all(Bin_Id,".fasta$")) %>%
   select(Genome, everything())
@@ -110,8 +111,7 @@ GenoTaxoInfo <- GenoTaxoInfo %>%
   select(Bin_Id,Genome,
          classification,
          Completeness,
-         Contamination,
-         Strain_heterogeneity)%>%
+         Contamination)%>%
   separate(classification,sep=";",
            into=c("D",
                   "P",
@@ -234,7 +234,7 @@ GGT2 <- GGT +
   width=0.1,
   color="white",
   pwidth=0.1,
-  offset=0.10)+ 
+  offset=0.06)+ 
   scale_fill_gradientn(name="GenomeCompletness %",
                        colors = RColorBrewer::brewer.pal(9, "YlOrRd"))+
   ggnewscale::new_scale_fill()+
@@ -244,7 +244,10 @@ GGT2 <- GGT +
     width=0.1,
     color="white",
     offset=0.12
-  )
+  )+ 
+  scale_fill_gradientn(name="Contamination %",
+                       colors = RColorBrewer::brewer.pal(6, 
+                       "BuPu"))
 
 GGT2
 
